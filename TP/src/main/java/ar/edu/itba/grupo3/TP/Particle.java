@@ -112,6 +112,28 @@ public class Particle implements Comparable<Particle> {
         return -( (deltaVxdeltaR + Math.sqrt(d)) / deltaVSquared);
     }
 
+    public void elasticCollission(Particle p){
+        //hacemos cuentas auxiliares
+        double[] deltaR = new double[] {p.x - x, p.y - y };
+        double[] deltaV = new double[] {p.vx - vx, p.vy - vy };
+        double deltaVxdeltaR = deltaV[0] * deltaR[0] + deltaV[1] * deltaR[1];
+        double deltaRad = this.radius + p.radius;
+        double jAux = ( 2 * this.mass * p.mass * deltaVxdeltaR) / (deltaRad * (this.mass + p.mass));
+        //definimos el vector J
+        Double[] J = new Double[] {jAux * deltaR[0] / deltaRad, jAux * deltaR[1] / deltaRad};
+        //cambiamos nuestra velocidad utilizando J
+        changeVelocityDirection(J);
+        //le decimos a la particula con la que chocamos que cambie su velocidad con J invertido
+        J[0] *= -1;
+        J[1] *= -1;
+        p.changeVelocityDirection(J);
+    }
+
+    public void changeVelocityDirection(Double[] J){
+        this.vx = vx + J[0] / this.mass;
+        this.vy = vy + J[1] / this.mass;
+    }
+
     public void moveAgent(float l){
         double xPos = (Math.cos(this.getAngle()) * speed) + this.getX();
         double yPos = (Math.sin(this.getAngle()) * speed) + this.getY();
