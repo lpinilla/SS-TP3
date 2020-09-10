@@ -8,6 +8,7 @@ import java.util.PriorityQueue;
 public class BrownianMotion {
 
     PriorityQueue<ParticleHit> hits;
+    List<Particle> allParticles;
 
     public BrownianMotion(){
         hits = new PriorityQueue<>(Comparator.comparing(ParticleHit::getTimeToHit));

@@ -3,10 +3,7 @@ package ar.edu.itba.grupo3.TP;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 @Getter
 @Setter
@@ -75,6 +72,46 @@ public class Particle implements Comparable<Particle> {
         return particlesSameCellList;
     }
 
+    public void moveToTime(double tc){
+        this.x = this.x + this.vx * tc;
+        this.y = this.y + this.vy * tc;
+    }
+
+    public List<Double> timeToHitWalls(int L){
+        List<Double> ret = new ArrayList<>();
+        if(vx > 0){
+            //pared a la derecha
+            ret.add( (L - this.radius - this.x) / this.vx);
+        }else{
+            //pared a la izq
+            ret.add( (this.radius - this.x) / this.vx);
+        }
+        if(vy > 0){
+            //pared de arriba
+            ret.add( (L - this.radius - this.y) / this.vy);
+        }else{
+            //pared de abajo
+            ret.add( (this.radius - this.y) / this.vy);
+        }
+        return ret;
+    }
+
+    public Double timeToHitParticle(Particle p){
+        double[] deltaR = new double[] {p.x - x, p.y - y };
+        double[] deltaV = new double[] {p.vx - vx, p.vy - vy };
+        double deltaVxdeltaR = deltaV[0] * deltaR[0] + deltaV[1] * deltaR[1];
+        //caso 1
+        if(deltaVxdeltaR >= 0) return null;
+        //caso 2
+        double deltaRad = this.radius + p.radius;
+        double deltaVSquared = deltaV[0] * deltaV[0] + deltaV[1] * deltaV[1];
+        double deltaRSquared = deltaR[0] * deltaR[0] + deltaR[1] * deltaR[1];
+        double d = deltaVxdeltaR * deltaVxdeltaR - deltaVSquared * (deltaRSquared - deltaRad * deltaRad);
+        if(d < 0) return null;
+        //caso 3
+        return -( (deltaVxdeltaR + Math.sqrt(d)) / deltaVSquared);
+    }
+
     public void moveAgent(float l){
         double xPos = (Math.cos(this.getAngle()) * speed) + this.getX();
         double yPos = (Math.sin(this.getAngle()) * speed) + this.getY();
@@ -106,4 +143,5 @@ public class Particle implements Comparable<Particle> {
         if(finalProperty < 0) finalProperty += Math.PI * 2;
         this.setAngle(finalProperty);
     }
+
 }
