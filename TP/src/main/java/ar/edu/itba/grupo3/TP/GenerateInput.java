@@ -9,7 +9,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class GenerateInput {
 
-    List<Particle> generated;
+    private List<Particle> generated;
 
     public GenerateInput(){
         generated = new ArrayList<>();
@@ -24,7 +24,7 @@ public class GenerateInput {
     * @param N cantidad de partículas
     * @param L lado del cuadrado
     */
-    private void generateInputs(int N,int L) {
+    public void generateInputs(int N,int L) {
         if(!checkParams(N, L)) return;
         //particles radius between 0 and 1;
         generateStaticFile(N, L);
@@ -76,8 +76,8 @@ public class GenerateInput {
             for (int i = 1; i < N-1; i++) {
                 //generar posiciones x e y hasta que se encuentre una que no colisione
                 do {
-                    xpos = ThreadLocalRandom.current().nextDouble(0, L);
-                    ypos = ThreadLocalRandom.current().nextDouble(0, L);
+                    xpos = ThreadLocalRandom.current().nextDouble(0.2, L - 0.2);
+                    ypos = ThreadLocalRandom.current().nextDouble(0.2, L - 0.2);
                 }while(checkIfCollision(xpos, ypos));
                 //generar velocidades aleatorias, módulo de rapidez < 2
                 xvel = ThreadLocalRandom.current().nextDouble(-1, 1);
@@ -91,6 +91,7 @@ public class GenerateInput {
                         String.format(Locale.US, "%6.7e", xvel) + "   " +
                         String.format(Locale.US, "%6.7e", yvel)
                 );
+                generated.add(new Particle(xpos, ypos, xvel, yvel, 0.2, 0.0, 0.0));
             }
             writer.flush();
             writer.close();
