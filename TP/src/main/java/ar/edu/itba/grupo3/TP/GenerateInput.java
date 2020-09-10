@@ -1,73 +1,124 @@
 package ar.edu.itba.grupo3.TP;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class GenerateInput {
 
-    public static void inputGenerator(int N,int L) {
-        generateInputs(N,L);
+    List<Particle> generated;
+
+    public GenerateInput(){
+        generated = new ArrayList<>();
     }
 
-
-    //N = #particles
-    //L = length board
-    private static void generateInputs(int N,int L) {
-        Random r = new Random();
+    /**
+     * GenerateInputs: dada un valor de cantidad de partículas y el lado del cuadrado, genera 2 archivos
+    * Para este trabajo partícular, se cumple que se inserta primero el objeto de mayor radio y luego
+    * se colocan los objetos de menor radios sin que estos colisionen con alguno de los anteriores
+    * RandomStatic informa sobre las propiedades estáticas de las partículas, el radio y la masa
+    * RandomDynamic informa sobre las propiedades dinámicas de las partículas, posición y velocidad
+    * @param N cantidad de partículas
+    * @param L lado del cuadrado
+    */
+    private void generateInputs(int N,int L) {
+        if(!checkParams(N, L)) return;
         //particles radius between 0 and 1;
-        try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter(new File("resources/RandomStaticInput.txt")));
-            writer.write(Integer.toString(N));
-            writer.newLine();
-            writer.write(Integer.toString(L));
-            writer.newLine();
+        generateStaticFile(N, L);
+        generateDynamic(N, L);
+    }
 
-            //creating ratios of particles
-            for (int i = 0; i < N; i++) {
-                for(int j=0;j<2;j++){
-                    double rad = r.nextDouble() * L;
-                    double prop = r.nextDouble() * (Math.PI * 2);
-                    if(j!=1){
-                        writer.write(String.format(Locale.US, "%.4f", rad)+"   ");
-                    }
-                    else{
-                        //write another property, 1 in this case because its an example
-                        writer.write(String.format(Locale.US, "%.4f", prop));
-                    }
-                }
-                writer.newLine();
+    private void generateStaticFile(int N, int L){
+        try {
+            OutputStream outputStream = new FileOutputStream(new File("resources/RandomStaticInput.txt"));
+            PrintWriter writer = new PrintWriter(outputStream);
+            writer.println(N);
+            writer.println(L);
+            //big object
+            String radius = String.format(Locale.US, "%.4f", 0.7) + "   ";
+            String mass = String.format(Locale.US, "%.4f", 2.0);
+            writer.println(radius + mass);
+            //setting the radius and mass for all the small objects
+            for (int i = 1; i < N -1; i++) {
+                radius = String.format(Locale.US, "%.4f", 0.2) + "   ";
+                mass = String.format(Locale.US, "%.4f", 0.9);
+                writer.println(radius + mass);
             }
             writer.flush();
             writer.close();
+            outputStream.close();
         }catch (IOException e) {
             System.out.println("Error creating Static Input");
+            e.printStackTrace();
         }
+    }
 
+    private void generateDynamic(int N, int L){
         try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter(new File("resources/RandomDynamicInput.txt")));
-
-            writer.write("0"); //time of dynamic particles.
-            writer.newLine();
-
-            for (int i = 0; i < N; i++) {
-                double ran= r.nextDouble() * L;
-                double ran2 =r.nextDouble() * L;
-                writer.write(String.format(Locale.US, "%6.7e", ran)
-                                + "   "
-                                + String.format(Locale.US, "%6.7e", ran2)
+            OutputStream outputStream = new FileOutputStream(new File("resources/RandomDynamicInput.txt"));
+            PrintWriter writer = new PrintWriter(outputStream);
+            writer.println("0"); //time of dynamic particles.
+            //creamos una lista para ir guardando sus posiciones
+            //primero seteamos el objecto más grande
+            String x = String.format(Locale.US, "%.4f", L / 2.0) + "   ";
+            String y = String.format(Locale.US, "%.4f", L / 2.0) + "   ";
+            String vx = String.format(Locale.US, "%.4f", 0.0) + "   ";
+            String vy = String.format(Locale.US, "%.4f", 0.0);
+            generated.add(new Particle(L/2.0,L/2.0, 0.0, 0.0, 0.7, 0.0, 0.0));
+            //ahora seteamos los objetos más pequeños
+            writer.println(x + y + vx + vy);
+            double xpos, ypos;
+            double xvel, yvel;
+            double speed;
+            for (int i = 1; i < N-1; i++) {
+                //generar posiciones x e y hasta que se encuentre una que no colisione
+                do {
+                    xpos = ThreadLocalRandom.current().nextDouble(0, L);
+                    ypos = ThreadLocalRandom.current().nextDouble(0, L);
+                }while(checkIfCollision(xpos, ypos));
+                //generar velocidades aleatorias, módulo de rapidez < 2
+                xvel = ThreadLocalRandom.current().nextDouble(-1, 1);
+                yvel = ThreadLocalRandom.current().nextDouble(-1, 1);
+                speed = ThreadLocalRandom.current().nextDouble(0, 2);
+                xvel *= speed;
+                yvel *= speed;
+                writer.println(
+                        String.format(Locale.US, "%6.7e", xpos) + "   " +
+                        String.format(Locale.US, "%6.7e", ypos) + "   " +
+                        String.format(Locale.US, "%6.7e", xvel) + "   " +
+                        String.format(Locale.US, "%6.7e", yvel)
                 );
-                writer.newLine();
             }
             writer.flush();
             writer.close();
-
+            outputStream.close();
         } catch (IOException e) {
             System.out.println("Error creating Dynamic Input");
         }
+    }
 
+    private boolean checkIfCollision(double x, double y){
+        double aux;
+        for(Particle p : generated){
+            aux = Math.pow(x - p.getX(), 2) + Math.pow(y - p.getY(), 2) - Math.pow(0.2 + p.getRadius(), 2);
+            if(aux <= 0) return true;
+        }
+        return false;
+    }
+
+
+    private boolean checkParams(int N, int L){
+        if(N <= 100 || N >= 150){
+            System.out.println("Invalid number of particles");
+            return false;
+        }
+        if(L != 6){
+            System.out.print("Invalid Size for this simulation");
+            return false;
+        }
+        return true;
     }
 }
