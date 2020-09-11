@@ -16,4 +16,8 @@ public class ParticleHit {
         this.p2 = p2;
     }
 
+    public boolean containsParticle(Particle p){
+        return p1.equals(p) || p2.equals(p);
+    }
+
 }
