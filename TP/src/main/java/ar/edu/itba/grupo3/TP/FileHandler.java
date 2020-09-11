@@ -25,7 +25,7 @@ public class FileHandler {
             //particles
             int index = 0;
             while ((s = br.readLine()) != null) {
-                String[] rad_prop = s.split(" {3}");
+                String[] rad_prop = s.split("\t");
                 allParticles.add(
                         new Particle(
                                 Double.parseDouble(rad_prop[0]),
@@ -52,13 +52,12 @@ public class FileHandler {
             int index = 0;
             Particle aux;
             while ((s = br.readLine()) != null) {
-                String[] position = s.split(" {3}");
+                String[] position = s.split("\t");
                 aux = info.getAllParticles().get(index);
                 aux.setX(Double.parseDouble(position[0]));
                 aux.setY(Double.parseDouble(position[1]));
                 aux.setVx(Double.parseDouble(position[2]));
                 aux.setVy(Double.parseDouble(position[3]));
-                //putInCell(aux);
                 index++;
             }
             br.close();

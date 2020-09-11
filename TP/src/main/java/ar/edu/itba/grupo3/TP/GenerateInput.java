@@ -38,12 +38,12 @@ public class GenerateInput {
             writer.println(N);
             writer.println(L);
             //big object
-            String radius = String.format(Locale.US, "%.4f", 0.7) + "   ";
+            String radius = String.format(Locale.US, "%.4f", 0.7) + "\t";
             String mass = String.format(Locale.US, "%.4f", 2.0);
             writer.println(radius + mass);
             //setting the radius and mass for all the small objects
-            for (int i = 1; i < N -1; i++) {
-                radius = String.format(Locale.US, "%.4f", 0.2) + "   ";
+            for (int i = 1; i < N; i++) {
+                radius = String.format(Locale.US, "%.4f", 0.2) + "\t";
                 mass = String.format(Locale.US, "%.4f", 0.9);
                 writer.println(radius + mass);
             }
@@ -63,9 +63,9 @@ public class GenerateInput {
             writer.println("0"); //time of dynamic particles.
             //creamos una lista para ir guardando sus posiciones
             //primero seteamos el objecto más grande
-            String x = String.format(Locale.US, "%.4f", L / 2.0) + "   ";
-            String y = String.format(Locale.US, "%.4f", L / 2.0) + "   ";
-            String vx = String.format(Locale.US, "%.4f", 0.0) + "   ";
+            String x = String.format(Locale.US, "%.4f", L / 2.0) + "\t";
+            String y = String.format(Locale.US, "%.4f", L / 2.0) + "\t";
+            String vx = String.format(Locale.US, "%.4f", 0.0) + "\t";
             String vy = String.format(Locale.US, "%.4f", 0.0);
             generated.add(new Particle(L/2.0,L/2.0, 0.0, 0.0, 0.7, 0.0, 0.0));
             //ahora seteamos los objetos más pequeños
@@ -73,7 +73,7 @@ public class GenerateInput {
             double xpos, ypos;
             double xvel, yvel;
             double speed;
-            for (int i = 1; i < N-1; i++) {
+            for (int i = 1; i < N; i++) {
                 //generar posiciones x e y hasta que se encuentre una que no colisione
                 do {
                     xpos = ThreadLocalRandom.current().nextDouble(0.2, L - 0.2);
@@ -86,9 +86,9 @@ public class GenerateInput {
                 xvel *= speed;
                 yvel *= speed;
                 writer.println(
-                        String.format(Locale.US, "%6.7e", xpos) + "   " +
-                        String.format(Locale.US, "%6.7e", ypos) + "   " +
-                        String.format(Locale.US, "%6.7e", xvel) + "   " +
+                        String.format(Locale.US, "%6.7e", xpos) + "\t" +
+                        String.format(Locale.US, "%6.7e", ypos) + "\t" +
+                        String.format(Locale.US, "%6.7e", xvel) + "\t" +
                         String.format(Locale.US, "%6.7e", yvel)
                 );
                 generated.add(new Particle(xpos, ypos, xvel, yvel, 0.2, 0.0, 0.0));
