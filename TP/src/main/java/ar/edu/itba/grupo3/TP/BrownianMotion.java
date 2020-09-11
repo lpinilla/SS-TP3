@@ -11,6 +11,7 @@ public class BrownianMotion {
     private final float timeToSave;
     private final float deltaT;
     private float timer;
+    private int savedCount;
     private PriorityQueue<ParticleHit> hits;
 
     public BrownianMotion(){
@@ -19,6 +20,7 @@ public class BrownianMotion {
         timeToSave = 10.0f;
         deltaT = 1.0f;
         timer = 0.0f;
+        savedCount = 0;
         simulationInfo = fileHandler.loadData("resources/RandomStaticInput.txt",
                 "resources/RandomDynamicInput.txt");
     }
@@ -48,7 +50,8 @@ public class BrownianMotion {
 
     public void saveState(){
         //save to file
-        //TODO
+        fileHandler.saveDynamic(simulationInfo.getAllParticles(), savedCount++);
+        fileHandler.saveHitFreq(simulationInfo.getHitsCount());
         simulationInfo.setHitsCount(0);
         timer = 0;
     }

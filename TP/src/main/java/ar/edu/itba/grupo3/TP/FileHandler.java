@@ -1,8 +1,11 @@
 package ar.edu.itba.grupo3.TP;
 
+import jdk.javadoc.internal.doclets.toolkit.util.DocFinder;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class FileHandler {
 
@@ -66,5 +69,40 @@ public class FileHandler {
         }
         return info;
     }
+
+    public void saveDynamic(List<Particle> particles, int n) {
+        String fileOutputPath = "resources/dynamic.txt";
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter(new File(fileOutputPath), true) );
+            writer.write(Integer.toString(n));
+            writer.newLine();
+            for(Particle p : particles){
+                String builder = String.format(Locale.US, "%6.7e", p.getX()) + "    " +
+                        String.format(Locale.US, "%6.7e", p.getY()) + "    " +
+                        String.format(Locale.US, "%6.7e", p.getVx()) + "    " +
+                        String.format(Locale.US, "%6.7e", p.getVy());
+                writer.write(builder);
+                writer.newLine();
+            }
+            writer.flush();
+            writer.close();
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public void saveHitFreq(int hitCount){
+        String fileOutputPath = "resources/hitFreq.txt";
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter(new File(fileOutputPath), true) );
+            writer.write(Integer.toString(hitCount));
+            writer.newLine();
+            writer.flush();
+            writer.close();
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
 
 }
