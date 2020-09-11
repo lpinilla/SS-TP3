@@ -112,7 +112,11 @@ public class Particle implements Comparable<Particle> {
         return -( (deltaVxdeltaR + Math.sqrt(d)) / deltaVSquared);
     }
 
-    public void elasticCollission(Particle p){
+    public void elasticCollision(Particle p, int L){
+        if(p == null){
+            collideWithWall(L);
+            return;
+        }
         //hacemos cuentas auxiliares
         double[] deltaR = new double[] {p.x - x, p.y - y };
         double[] deltaV = new double[] {p.vx - vx, p.vy - vy };
@@ -127,6 +131,19 @@ public class Particle implements Comparable<Particle> {
         J[0] *= -1;
         J[1] *= -1;
         p.changeVelocityDirection(J);
+    }
+
+    public void collideWithWall(int L){
+        //determinar con qué pared va a choca en base a su posición y velocidad
+
+        //paredes verticales
+        if( (double) L - (x + radius) < 0.0001 || (x - radius) < 0.0001 ){
+            this.vx = -this.vx;
+        }
+        //paredes horizontales
+        if( (double) L - (y + radius) < 0.0001 || (y - radius) < 0.0001 ){
+            this.vy = -this.vy;
+        }
     }
 
     public void changeVelocityDirection(Double[] J){

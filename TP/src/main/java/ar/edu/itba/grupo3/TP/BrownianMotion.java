@@ -20,15 +20,26 @@ public class BrownianMotion {
     public void simulate(){
         //bruteforce agarrar todos los tc posibles
         generateAllTimes();
-        //loop
-        //agarrar el menor tc
-        ParticleHit nextHit = hits.poll();
-        //evolucionar el sistema hasta tc
-        //reducir el tiempo en los demás
-        hits.forEach(h -> h.setTimeToHit(h.getTimeToHit() - nextHit.getTimeToHit()));
-        //guardar el sistema si el reloj lo dicta
-        //colisionar
-        //recalcular los tc de las partículas que chocaron
+        while(true) {
+            //agarrar el menor tc
+            ParticleHit nextHit = hits.poll();
+            if(nextHit == null || nextHit.getTimeToHit() == null || nextHit.getP1() == null) continue;
+            //evolucionar el sistema hasta tc
+            forwardSystem(nextHit.getTimeToHit());
+            //guardar el sistema si el reloj lo dicta
+            //TODO
+            //si el choque fue entre la partícula 0 y la pared, cortar
+            if( nextHit.getP1().getId().equals(0) && nextHit.getP2() == null) break;
+            //colisionar
+            nextHit.getP1().elasticCollision(nextHit.getP2(), L);
+            //recalcular los tc de las partículas que chocaron
+            recalculateTimesForParticles(nextHit.getP1(), nextHit.getP2());
+        }
+    }
+
+    public void forwardSystem(double tc){
+        allParticles.forEach(p -> p.moveToTime(tc));
+        hits.forEach(h -> h.setTimeToHit(h.getTimeToHit() - tc));
     }
 
     public void generateAllTimes(){
