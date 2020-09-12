@@ -38,6 +38,8 @@ f.close()
 #Saltear el primero que es constructor
 times = times[1:]
 
+print(str(len(times)) + " muestras tomadas")
+
 #fig, ax = plt.subplots()
 Writer = ani.writers['ffmpeg']
 writer = Writer(fps=300, metadata=dict(artist='me'), bitrate=1080)
@@ -65,7 +67,7 @@ def init():
 
 fig, ax = plt.subplots()
 line, = ax.plot([], [], '.', markersize=45)
-lineBig, = ax.plot([], [], '.', markersize=165)
+lineBig, = ax.plot([], [], '.', color="red", markersize=165)
 part, = ax.plot([], [], '.', color="red", markersize=6)
 ax.grid()
 xdata, ydata = [], []
@@ -84,7 +86,7 @@ def animate(i):
     #frame = str(i)
 
 
-animation = ani.FuncAnimation(fig, animate, frames=len(times) -1, interval=1, repeat=True, init_func=init)
-#animation = ani.FuncAnimation(fig, animate, frames=500, interval=1, repeat=True, init_func=init)
+animation = ani.FuncAnimation(fig, animate, frames=len(times)-1, interval=1, repeat=True, init_func=init)
+#animation = ani.FuncAnimation(fig, animate, frames=300, interval=1, repeat=True, init_func=init)
 plt.show()
-#animation.save('poc.gif', writer='imagemagick')
+#animation.save('poc.gif', writer='imagemagick', fps=60)
