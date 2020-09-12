@@ -16,9 +16,8 @@ public class FileHandler {
         if (path.isEmpty()) return null;
         SimInfo ret = new SimInfo();
         List<Particle> allParticles = new ArrayList<>();
-        File file = new File(path);
         try {
-            BufferedReader br = new BufferedReader(new FileReader(file));
+            BufferedReader br = new BufferedReader(new FileReader(new File(path)));
             String s;
             ret.setN(Integer.parseInt(br.readLine()));
             ret.setL(Integer.parseInt(br.readLine()));
@@ -43,9 +42,8 @@ public class FileHandler {
 
     public SimInfo loadDynamicFile(String path, SimInfo info) {
         if (path.isEmpty()) return null;
-        File file = new File(path);
         try {
-            BufferedReader br = new BufferedReader(new FileReader(file));
+            BufferedReader br = new BufferedReader(new FileReader(new File(path)));
             String s;
             int time = Integer.parseInt(br.readLine()); //ignore first line
             //particles

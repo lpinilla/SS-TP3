@@ -94,20 +94,23 @@ public class Particle implements Comparable<Particle> {
 
     public List<Double> timeToHitWalls(int L){
         List<Double> ret = new ArrayList<>();
+        double aux;
         if(vx > 0){
             //pared a la derecha
-            ret.add( (L - this.radius - this.x) / this.vx);
+            aux =  (L - this.radius - this.x) / this.vx;
         }else{
             //pared a la izq
-            ret.add( (this.radius - this.x) / this.vx);
+            aux = ( (this.radius - this.x) / this.vx);
         }
+        if( aux != Double.NEGATIVE_INFINITY) ret.add(aux);
         if(vy > 0){
             //pared de arriba
-            ret.add( (L - this.radius - this.y) / this.vy);
+            aux =  (L - this.radius - this.y) / this.vy;
         }else{
             //pared de abajo
-            ret.add( (this.radius - this.y) / this.vy);
+            aux =  (this.radius - this.y) / this.vy;
         }
+        if( aux != Double.NEGATIVE_INFINITY) ret.add(aux);
         return ret;
     }
 
@@ -121,7 +124,7 @@ public class Particle implements Comparable<Particle> {
         double deltaRad = this.radius + p.radius;
         double deltaVSquared = deltaV[0] * deltaV[0] + deltaV[1] * deltaV[1];
         double deltaRSquared = deltaR[0] * deltaR[0] + deltaR[1] * deltaR[1];
-        double d = deltaVxdeltaR * deltaVxdeltaR - deltaVSquared * (deltaRSquared - deltaRad * deltaRad);
+        double d = (deltaVxdeltaR * deltaVxdeltaR) - (deltaVSquared * (deltaRSquared - deltaRad * deltaRad));
         if(d < 0) return null;
         //caso 3
         return -( (deltaVxdeltaR + Math.sqrt(d)) / deltaVSquared);

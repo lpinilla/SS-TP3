@@ -3,6 +3,8 @@ from matplotlib.ticker import (AutoMinorLocator, MultipleLocator)
 
 x = []
 y = []
+vx = []
+vy = []
 #particle_id = 15
 #radius = 1.0
 #M = 13
@@ -11,20 +13,25 @@ L = 6
 with open('RandomDynamicInput.txt') as f:
     next(f)
     for line in f:
-        data = line[0:-1].split('   ')
+        data = line[0:-1].split('\t')
         x.append(float(data[0]))
         y.append(float(data[1]))
+        vx.append(float(data[2]))
+        vy.append(float(data[3]))
 f.close()
 
 fig, ax = plt.subplots()
-plt.plot(x[0], y[0], '.', color='red', markersize=7, label='remaining')
-plt.plot(x[1:], y[1:], '.', color='blue', markersize=2, label='remaining')
+plt.plot(x[0], y[0], '.', color='red', markersize=165)
+plt.plot(x[1:], y[1:], '.', color='blue', markersize=45)
+#plt.plot(x[5], y[5], '.', color='yellow', markersize=7, label='Selected')
 
 #Círculos
-for i in range(0, len(x)):
+radius = 0.7
+cir = plt.Circle((x[0], y[0]), radius, color='green', fill=False)
+plt.gcf().gca().add_artist(cir)
+
+for i in range(1, len(x)):
     radius = 0.2
-    if i == 0:
-        radius = 0.7
     cir = plt.Circle((x[i], y[i]), radius, color='green', fill=False)
     plt.gcf().gca().add_artist(cir)
 
