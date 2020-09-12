@@ -14,13 +14,15 @@ public class FileHandlerTest {
     @Before
     public void setup(){
         this.fileHandler = new FileHandler();
+        fileHandler.setStaticInputFile("resources/RandomStaticInput.txt");
+        fileHandler.setDynamicInputfile("resources/RandomDynamicInput.txt");
     }
 
     @Test
     public void loadStaticTest(){
         Particle expP1 = new Particle(0.7, 2.0, 0);
         Particle expP2 = new Particle(0.2, 0.9, 1);
-        SimInfo ret = fileHandler.loadStaticFile("resources/RandomStaticInput.txt");
+        SimInfo ret = fileHandler.loadStaticFile();
         Assert.assertNotNull(ret);
         Assert.assertEquals(6, ret.getL());
         Assert.assertEquals(130, ret.getN());
@@ -37,8 +39,8 @@ public class FileHandlerTest {
         expectedParts.add(new Particle(3.0, 3.0, 0.0, 0.0, 0.7, 2.0, 0.0));
         expectedParts.add(new Particle(0.48313799,2.7140073,-0.012226598,0.023783749, 0.2, 0.9, 0.0));
         expectedParts.add(new Particle(0.83454679,4.2652592,-0.44342112,-0.10132946,  0.2, 0.9, 0.0));
-        SimInfo staticinfo = fileHandler.loadStaticFile("resources/RandomStaticInput.txt");
-        SimInfo ret = fileHandler.loadDynamicFile("resources/RandomDynamicInput.txt", staticinfo);
+        SimInfo staticinfo = fileHandler.loadStaticFile();
+        SimInfo ret = fileHandler.loadDynamicFile(staticinfo);
         List<Particle> resultParts = new ArrayList<>(3);
         resultParts.add(ret.getAllParticles().get(0));
         resultParts.add(ret.getAllParticles().get(1));

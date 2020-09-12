@@ -4,26 +4,39 @@ import java.util.Comparator;
 import java.util.PriorityQueue;
 import java.util.stream.Collectors;
 
-@SuppressWarnings("FieldMayBeFinal")
+@SuppressWarnings({"FieldMayBeFinal", "FieldCanBeLocal"})
 public class BrownianMotion {
+
+    private final String staticInputFile = "resources/RandomStaticInput.txt";
+    private final String dynamicInputFile = "resources/RandomDynamicInput.txt";
+    private final String dynamicOutputFile = "resources/dynamic.txt";
+    private final String hitFreqFile = "resources/hitFreq.txt";
+    private final String dcmFile = "resources/dcm.txt";
 
     private SimInfo simulationInfo;
     private FileHandler fileHandler;
-    private final float timeToSave;
-    private final float deltaT;
-    private float timer;
+    private final double timeToSave;
+    private double timer;
     private int savedCount;
     private PriorityQueue<ParticleHit> hits;
 
+    //DCM
+    private double startX;
+    private double startY;
+    private final int dcmRate = 5;
+    private int dcmCount;
+
     public BrownianMotion(){
         hits = new PriorityQueue<>(Comparator.comparing(ParticleHit::getTimeToHit));
-        fileHandler = new FileHandler();
-        timeToSave = 10.0f;
-        deltaT = 1.0f;
+        fileHandler = new FileHandler(staticInputFile, dynamicInputFile,
+                dynamicOutputFile, hitFreqFile, dcmFile);
+        timeToSave = 0.05d;
         timer = 0.0f;
         savedCount = 0;
-        simulationInfo = fileHandler.loadData("resources/RandomStaticInput.txt",
-                "resources/RandomDynamicInput.txt");
+        simulationInfo = fileHandler.loadData();
+        startX = simulationInfo.getAllParticles().get(0).getX();
+        startY = simulationInfo.getAllParticles().get(0).getY();
+        dcmCount = 0;
     }
 
     public void simulate(){
@@ -37,9 +50,12 @@ public class BrownianMotion {
             //evolucionar el sistema hasta tc
             forwardSystem(nextHit.getTimeToHit());
             //avanzar el reloj
-            timer += deltaT;
+            //timer += deltaT;
+            timer += nextHit.getTimeToHit();
             //guardar el sistema si el reloj lo dicta
-            if(timer > timeToSave) saveState();
+            if(timer > timeToSave){
+                saveState();
+            }
             //si el choque fue entre la partícula 0 y la pared, cortar
             if( nextHit.getP1().getId().equals(0) && nextHit.getP2() == null) break;
             //colisionar
@@ -54,7 +70,10 @@ public class BrownianMotion {
         fileHandler.saveDynamic(simulationInfo.getAllParticles(), savedCount++);
         fileHandler.saveHitFreq(simulationInfo.getHitsCount());
         simulationInfo.setHitsCount(0);
-        timer = 0;
+        timer -= timeToSave;
+        if(dcmCount++ % dcmRate == 0){
+            fileHandler.saveDCM(simulationInfo.getAllParticles().get(0).distanceToPoint(startX, startY));
+        }
     }
 
     public void forwardSystem(double tc){

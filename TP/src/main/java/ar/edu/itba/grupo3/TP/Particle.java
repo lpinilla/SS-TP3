@@ -201,4 +201,10 @@ public class Particle implements Comparable<Particle> {
         this.setAngle(finalProperty);
     }
 
+    public double distanceToPoint(double x, double y){
+        double deltaX = x - this.x;
+        double deltaY = y - this.y;
+        return Math.sqrt(deltaX * deltaX - deltaY * deltaY);
+    }
+
 }
