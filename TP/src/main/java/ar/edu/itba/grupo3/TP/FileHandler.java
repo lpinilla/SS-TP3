@@ -86,17 +86,41 @@ public class FileHandler {
         return info;
     }
 
-    public void saveDynamic(List<Particle> particles, int n) {
+    public void saveDynamic(SimInfo i, int n) {
         String fileOutputPath = "resources/dynamic.txt";
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(new File(fileOutputPath), true) );
+            writer.write(Integer.toString(i.getN()+4));
+            writer.newLine();
             writer.write(Integer.toString(n));
             writer.newLine();
-            for(Particle p : particles){
+            //pongo en las esquinas solo para fijar el cuadro de simulacion
+            String builder1 = String.format(Locale.US, "%6.7e", 0.0)+ "    " +
+                    String.format(Locale.US, "%6.7e", 0.0) + "    " +
+                    String.format(Locale.US, "%6.7e", 0.0) + "    " +
+                    String.format(Locale.US, "%6.7e", 0.0);
+            writer.write(builder1);
+            writer.newLine();String builder2 = String.format(Locale.US, "%6.7e", 0.0) + "    " +
+                    String.format(Locale.US, "%6.7e", (double) i.getL()) + "    " +
+                    String.format(Locale.US, "%6.7e", 0.0) + "    " +
+                    String.format(Locale.US, "%6.7e", 0.0);
+            writer.write(builder2);
+            writer.newLine();String builder3 = String.format(Locale.US, "%6.7e", (double) i.getL()) + "    " +
+                    String.format(Locale.US, "%6.7e", 0.0) + "    " +
+                    String.format(Locale.US, "%6.7e", 0.0) + "    " +
+                    String.format(Locale.US, "%6.7e", 0.0);
+            writer.write(builder3);
+            writer.newLine();String builder4 = String.format(Locale.US, "%6.7e", (double) i.getL()) + "    " +
+                    String.format(Locale.US, "%6.7e", (double) i.getL()) + "    " +
+                    String.format(Locale.US, "%6.7e", 0.0) + "    " +
+                    String.format(Locale.US, "%6.7e", 0.0);
+            writer.write(builder4);
+            writer.newLine();
+            for(Particle p : i.getAllParticles()){
                 String builder = String.format(Locale.US, "%6.7e", p.getX()) + "    " +
                         String.format(Locale.US, "%6.7e", p.getY()) + "    " +
-                        String.format(Locale.US, "%6.7e", p.getVx()) + "    " +
-                        String.format(Locale.US, "%6.7e", p.getVy());
+                        String.format(Locale.US, "%6.7e", p.getRadius()) + "    " +
+                        String.format(Locale.US, "%6.7e", Math.sqrt(Math.pow(p.getVx(),2)+Math.pow(p.getVy(),2)));
                 writer.write(builder);
                 writer.newLine();
             }

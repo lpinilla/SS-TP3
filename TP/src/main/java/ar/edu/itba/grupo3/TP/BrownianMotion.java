@@ -67,7 +67,7 @@ public class BrownianMotion {
 
     public void saveState(){
         //save to file
-        fileHandler.saveDynamic(simulationInfo.getAllParticles(), savedCount++);
+        fileHandler.saveDynamic(simulationInfo, savedCount++);
         fileHandler.saveHitFreq(simulationInfo.getHitsCount());
         simulationInfo.setHitsCount(0);
         timer -= timeToSave;
