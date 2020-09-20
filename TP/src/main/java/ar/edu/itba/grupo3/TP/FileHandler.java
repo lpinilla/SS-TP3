@@ -158,5 +158,21 @@ public class FileHandler {
         }
     }
 
+    public void saveBigParticlePath(Particle p){
+        String fileOutputPath = "resources/bigParticlePath.txt";
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter(new File(fileOutputPath), true) );
+            String builder = String.format(Locale.US, "%6.7e", p.getX()) + "    " +
+                    String.format(Locale.US, "%6.7e", p.getY());
+            writer.write(builder);
+            writer.newLine();
+            writer.flush();
+            writer.close();
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+
+    }
+
 
 }
