@@ -59,7 +59,12 @@ public class GenerateInput {
     private void generateDynamic(int N, int L){
         try {
             OutputStream outputStream = new FileOutputStream(new File("resources/RandomDynamicInput.txt"));
+            OutputStream velocityT_0 = new FileOutputStream(new File("resources/velocityT_0.txt"));
+
             PrintWriter writer = new PrintWriter(outputStream);
+            PrintWriter writerVelocity = new PrintWriter(velocityT_0);
+
+
             writer.println("0"); //time of dynamic particles.
             //creamos una lista para ir guardando sus posiciones
             //primero seteamos el objecto más grande
@@ -91,11 +96,17 @@ public class GenerateInput {
                         String.format(Locale.US, "%6.7e", xvel) + "\t" +
                         String.format(Locale.US, "%6.7e", yvel)
                 );
+                writerVelocity.println(
+                                String.format(Locale.US, "%6.7e", Math.sqrt(xvel*xvel+yvel*yvel))+" ");
+
                 generated.add(new Particle(xpos, ypos, xvel, yvel, 0.2, 0.0, 0.0));
             }
             writer.flush();
             writer.close();
             outputStream.close();
+            writerVelocity.flush();
+            writerVelocity.close();
+            velocityT_0.close();
         } catch (IOException e) {
             System.out.println("Error creating Dynamic Input");
         }
@@ -112,7 +123,7 @@ public class GenerateInput {
 
 
     private boolean checkParams(int N, int L){
-        if(N <= 100 || N >= 150){
+        if(N <= 1 || N >= 150){
             System.out.println("Invalid number of particles");
             return false;
         }

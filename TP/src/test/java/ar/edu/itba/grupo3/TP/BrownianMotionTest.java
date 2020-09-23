@@ -9,7 +9,7 @@ public class BrownianMotionTest {
 
     @Before
     public void setup(){
-        brownianMotion = new BrownianMotion();
+        brownianMotion = new BrownianMotion(1);
     }
 
     @Test

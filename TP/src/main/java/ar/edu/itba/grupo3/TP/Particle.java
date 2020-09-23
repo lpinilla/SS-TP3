@@ -204,7 +204,12 @@ public class Particle implements Comparable<Particle> {
     public double distanceToPoint(double x, double y){
         double deltaX = x - this.x;
         double deltaY = y - this.y;
-        return Math.sqrt(deltaX * deltaX - deltaY * deltaY);
+        double r=Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+        return r;
+    }
+
+    public double realSpeed(){
+        return Math.sqrt(this.vx*this.vx+this.vy*this.vy);
     }
 
 }

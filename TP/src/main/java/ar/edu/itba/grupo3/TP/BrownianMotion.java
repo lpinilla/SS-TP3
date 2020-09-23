@@ -10,8 +10,10 @@ public class BrownianMotion {
     private final String staticInputFile = "resources/RandomStaticInput.txt";
     private final String dynamicInputFile = "resources/RandomDynamicInput.txt";
     private final String dynamicOutputFile = "resources/dynamic.txt";
-    private final String hitFreqFile = "resources/hitFreq.txt";
-    private final String dcmFile = "resources/dcm.txt";
+    private String hitFreqFile = null;
+    private String dcmFile=null;
+    private String velocity=null;
+    private String hitTime=null;
 
     private SimInfo simulationInfo;
     private FileHandler fileHandler;
@@ -23,20 +25,25 @@ public class BrownianMotion {
     //DCM
     private double startX;
     private double startY;
-    private final int dcmRate = 5;
+    private final int dcmRate = 1;
     private int dcmCount;
 
-    public BrownianMotion(){
+    public BrownianMotion(int i){
+        dcmFile= "resources/dcm_"+i+".txt";
+        hitFreqFile="resources/hitFreq_"+i+".txt";
+        velocity="resources/velocity_"+i+".txt";
+        hitTime="resources/hitTime_"+i+".txt";
         hits = new PriorityQueue<>(Comparator.comparing(ParticleHit::getTimeToHit));
         fileHandler = new FileHandler(staticInputFile, dynamicInputFile,
-                dynamicOutputFile, hitFreqFile, dcmFile);
-        timeToSave = 0.05d;
+                dynamicOutputFile, hitFreqFile, dcmFile,velocity,hitTime);
+        timeToSave = 1d;
         timer = 0.0f;
         savedCount = 0;
         simulationInfo = fileHandler.loadData();
         startX = simulationInfo.getAllParticles().get(0).getX();
         startY = simulationInfo.getAllParticles().get(0).getY();
         dcmCount = 0;
+
     }
 
     public void simulate(){
@@ -49,6 +56,7 @@ public class BrownianMotion {
             if(nextHit == null || nextHit.getTimeToHit() == null || nextHit.getP1() == null) continue;
             //evolucionar el sistema hasta tc
             forwardSystem(nextHit.getTimeToHit());
+            fileHandler.saveHitTime(nextHit.getTimeToHit());
             //avanzar el reloj
             //timer += deltaT;
             timer += nextHit.getTimeToHit();
@@ -70,10 +78,11 @@ public class BrownianMotion {
         fileHandler.saveDynamic(simulationInfo, savedCount++);
         fileHandler.saveBigParticlePath(simulationInfo.getAllParticles().get(0));
         fileHandler.saveHitFreq(simulationInfo.getHitsCount());
+        fileHandler.saveVelocity(simulationInfo.getAllParticles());
         simulationInfo.setHitsCount(0);
         timer -= timeToSave;
         if(dcmCount++ % dcmRate == 0){
-            fileHandler.saveDCM(simulationInfo.getAllParticles().get(0).distanceToPoint(startX, startY));
+            fileHandler.saveDCM(simulationInfo.getAllParticles().get(0).distanceToPoint(startX, startY),timer);
         }
     }
 

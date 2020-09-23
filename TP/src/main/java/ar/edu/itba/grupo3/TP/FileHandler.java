@@ -17,17 +17,21 @@ public class FileHandler {
     private String dynamicFile;
     private String hitFreqFile;
     private String dcmFile;
+    private String velocity;
+    private String hitTimes;
 
     public FileHandler(){
         staticInputFile = dynamicInputfile = dynamicFile = hitFreqFile = dcmFile = "";
     }
 
-    public FileHandler(String staticfile, String dynamicInputfile, String dynamicFile, String hitFreqFile, String dcmFile){
+    public FileHandler(String staticfile, String dynamicInputfile, String dynamicFile, String hitFreqFile, String dcmFile,String velocity,String hitTimes){
         this.staticInputFile = staticfile;
         this.dynamicInputfile = dynamicInputfile;
         this.dynamicFile = dynamicFile;
         this.hitFreqFile = hitFreqFile;
         this.dcmFile = dcmFile;
+        this.velocity=velocity;
+        this.hitTimes=hitTimes;
     }
 
     public SimInfo loadData(){
@@ -144,12 +148,41 @@ public class FileHandler {
         }
     }
 
+    public void saveVelocity(List<Particle> l ){
+        String fileOutputPath = velocity;
+        try{
+            BufferedWriter writer = new BufferedWriter(new FileWriter(new File(fileOutputPath), true));
+            for(Particle p:l){
+                writer.write(p.realSpeed()+" ");
+            }
+            writer.newLine();
+            writer.flush();
+            writer.close();
+        }catch (IOException e){
+            System.out.println(e.getMessage());
 
-    public void saveDCM(double displacement){
+        }
+    }
+
+    public void saveHitTime(double time){
+        String fileOutputPath = hitTimes;
+        try{
+            BufferedWriter writer = new BufferedWriter(new FileWriter(new File(fileOutputPath), true));
+            writer.write(time+" ");
+            writer.flush();
+            writer.close();
+        }catch (IOException e){
+            System.out.println(e.getMessage());
+        }
+
+    }
+
+
+    public void saveDCM(double displacement,double timer){
         String fileOutputPath = dcmFile;
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(new File(fileOutputPath), true));
-            writer.write(String.format(Locale.US, "%6.7e", displacement));
+            writer.write(String.format(Locale.US, "%6.7e", (displacement*2*timer)));
             writer.newLine();
             writer.flush();
             writer.close();
@@ -159,7 +192,7 @@ public class FileHandler {
     }
 
     public void saveBigParticlePath(Particle p){
-        String fileOutputPath = "resources/bigParticlePath.txt";
+        String fileOutputPath = "resources/bigParticlePathV"+p.getSpeed()+"M"+p.getMass()+".txt";
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(new File(fileOutputPath), true) );
             String builder = String.format(Locale.US, "%6.7e", p.getX()) + "    " +
