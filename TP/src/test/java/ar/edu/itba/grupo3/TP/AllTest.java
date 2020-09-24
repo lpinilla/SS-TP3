@@ -10,11 +10,10 @@ public class AllTest {
 
     @Test
     public void randomInputTest() {
-        generateInput = new GenerateInput();
 
-        generateInput.generateInputs(5, 6);
-        for (int i = 0; i < 1; i++) {
-
+        for (int i = 0; i < 10; i++) {
+            generateInput = new GenerateInput();
+            generateInput.generateInputs(130, 6);
             System.out.println(i);
             brownianMotion = new BrownianMotion(i);
             brownianMotion.simulate();

@@ -153,9 +153,10 @@ public class FileHandler {
         try{
             BufferedWriter writer = new BufferedWriter(new FileWriter(new File(fileOutputPath), true));
             for(Particle p:l){
-                writer.write(p.realSpeed()+" ");
+                writer.write(String.format(Locale.US, "%6.7e", (p.realSpeed())));
+                writer.newLine();
+
             }
-            writer.newLine();
             writer.flush();
             writer.close();
         }catch (IOException e){
@@ -182,7 +183,7 @@ public class FileHandler {
         String fileOutputPath = dcmFile;
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(new File(fileOutputPath), true));
-            writer.write(String.format(Locale.US, "%6.7e", (displacement*2*timer)));
+            writer.write(String.format(Locale.US, "%6.7e", (displacement*displacement)));
             writer.newLine();
             writer.flush();
             writer.close();

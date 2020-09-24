@@ -3,9 +3,9 @@ import seaborn as sb
 import numpy as np
 
 
-cant_files=4
+cant_files=10
 x=[]
-eje_x = np.arange(0.0, 30, 1)
+eje_x = np.arange(0.0, 20, 1)
 
 for i in range(0, cant_files):
     with open("../resources/hitFreq_" + str(i) + ".txt") as data:
@@ -19,10 +19,11 @@ mean=y.mean(axis=0).tolist()
 print(mean[0])
 err=y.std(axis=0).tolist()
 print(err[0])
-
+plt.xlabel('Tiempo [s]')
+plt.ylabel('Cantidad Colisiones')
 plt.errorbar(eje_x, mean[0], err[0], ls='none',marker='.',color='c')
 
 # fig, ax = plt.subplots()
 # ax.bar(eje_x, mean[0], yerr=err[0], align='center', alpha=0.5, ecolor='black', capsize=10)
-
+plt.savefig('colisionesVsTiempoN60.png')
 plt.show()
